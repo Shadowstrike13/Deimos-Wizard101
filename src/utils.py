@@ -365,10 +365,14 @@ async def navigate_to_ravenwood(client: Client):
     match current_zone:
         # Handling for dorm room
         case "WizardCity/Interiors/WC_Housing_Dorm_Interior":
-            await client.goto(70.15016174316406, 9.419374465942383)
-            while not await client.is_loading():
+            while await client.is_loading():
+                await asyncio.sleep(0.1)
+            while not await client.is_loading() and await client.zone_name() != "WizardCity/WC_Ravenwood":
                 await client.send_key(Keycode.S, 0.1)
             await wait_for_zone_change(client, current_zone=current_zone)
+            while await client.is_loading():
+                await asyncio.sleep(0.1)
+            
             bartleby_navigation = False
 
         # Handling for arcanum apartment
